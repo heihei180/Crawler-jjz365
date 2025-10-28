@@ -1,0 +1,39 @@
+# .github/workflows/run-crawler.yml
+name: Run Kotlin Crawler Daily
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 每天 UTC 00:00
+  workflow_dispatch:
+
+jobs:
+  run-crawler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'         # 根据你的项目选择 11/17/21
+          distribution: 'temurin'    # 或 'zulu', 'corretto' 等
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run crawler (main class)
+        run: ./gradlew run
+        # 或者如果你有 fat jar，可以用：
+        # java -jar build/libs/your-app-all.jar
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .  # 假设你的爬虫生成了数据文件，如 data.json
+          git diff-index --quiet HEAD || git commit -m "Update crawler data: $(date)"
+          git push
