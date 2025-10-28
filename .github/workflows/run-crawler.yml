@@ -1,39 +1,63 @@
-# .github/workflows/run-crawler.yml
 name: Run Kotlin Crawler Daily
 
+# 触发条件：每天 UTC 时间 00:00（北京时间 08:00）
+# 也可手动触发
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天 UTC 00:00
-  workflow_dispatch:
+    - cron: '0 0 * * *'  # UTC 时间每天 00:00
+  workflow_dispatch:      # 允许手动点击运行
 
 jobs:
   run-crawler:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. 检出代码
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # 必须提供 token 才能后续提交回仓库
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up JDK
+      # 2. 修复 gradlew 可执行权限（关键步骤！）
+      - name: Make gradlew executable
+        run: |
+          chmod +x ./gradlew || echo "gradlew not found or already executable"
+
+      # 3. 设置 JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'         # 根据你的项目选择 11/17/21
-          distribution: 'temurin'    # 或 'zulu', 'corretto' 等
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'  # 缓存 Gradle 依赖，加快构建
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
+      # 4. 构建项目
       - name: Build with Gradle
         run: ./gradlew build
+        # 如果你只想运行而不构建，可以用: ./gradlew assemble
 
-      - name: Run crawler (main class)
+      # 5. 运行爬虫（假设你的 main class 会被 gradle 正确识别）
+      - name: Run crawler
         run: ./gradlew run
-        # 或者如果你有 fat jar，可以用：
-        # java -jar build/libs/your-app-all.jar
 
-      - name: Commit and push results
+      # 6. 提交生成的数据文件（例如 datas/*.json）
+      - name: Commit data to repository
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git add .  # 假设你的爬虫生成了数据文件，如 data.json
-          git diff-index --quiet HEAD || git commit -m "Update crawler data: $(date)"
-          git push
+
+          # 只添加 datas/ 目录下的 JSON 文件（避免提交 build/ 等）
+          git add datas/*.json 2>/dev/null || echo "No new data files to add"
+
+          # 如果有变更，则提交
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "📊 Update crawler data: $(date '+%Y-%m-%d %H:%M:%S')"
+          fi
+
+          # 推送到 master 分支
+          git push origin HEAD:master
+
+        # 注意：GITHUB_TOKEN 默认有写权限（当在 workflow 中触发时）
