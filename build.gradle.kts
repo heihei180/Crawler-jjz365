@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.0"
+    application
 }
 
 group = "org.example"
@@ -33,4 +34,9 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(17)
+}
+
+// 👇 指定主类，这是 run 任务必需的
+application {
+    mainClass.set("CameraDataKt") // ⚠️ 根据你的主文件名调整
 }
