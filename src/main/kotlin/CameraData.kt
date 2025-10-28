@@ -180,7 +180,7 @@ fun writeFile(data: Map<String, List<CameraData>>) {
     }
 }
 
-fun main() {
+fun execute() {
     val changping = requestData("昌平区")
     println("昌平区摄像头数量：${changping.size}")
     val haidian = requestData("海淀区")
