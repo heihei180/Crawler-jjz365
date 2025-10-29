@@ -48,7 +48,7 @@ jobs:
           git config --local user.name "GitHub Actions"
 
           # 只添加 datas/ 目录下的 JSON 文件（避免提交 build/ 等）
-          git add datas/*.json 2>/dev/null || echo "No new data files to add"
+          git add datas/*.gz 2>/dev/null || echo "No new data files to add"
 
           # 如果有变更，则提交
           if git diff-index --quiet HEAD --; then
