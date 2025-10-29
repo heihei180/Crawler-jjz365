@@ -23,6 +23,7 @@ jobs:
       - name: Make gradlew executable
         run: |
           chmod +x ./gradlew || echo "gradlew not found or already executable"
+          git add ./gradlew  # 立即提交权限变更
 
       # 3. 设置 JDK 17
       - name: Set up JDK 17
@@ -55,9 +56,8 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "📊 Update crawler data: $(date '+%Y-%m-%d %H:%M:%S')"
+            # 推送到 master 分支
+            git push origin HEAD:dataset
           fi
-
-          # 推送到 master 分支
-          git push origin HEAD:dataset
 
         # 注意：GITHUB_TOKEN 默认有写权限（当在 workflow 中触发时）
