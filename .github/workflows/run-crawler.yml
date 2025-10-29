@@ -57,7 +57,7 @@ jobs:
           else
             git commit -m "📊 Update crawler data: $(date '+%Y-%m-%d %H:%M:%S')"
             # 推送到 master 分支
-            git push origin HEAD:dataset
+            git push origin HEAD:dataset --force
           fi
 
         # 注意：GITHUB_TOKEN 默认有写权限（当在 workflow 中触发时）
