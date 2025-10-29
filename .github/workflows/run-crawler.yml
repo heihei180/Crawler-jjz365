@@ -48,7 +48,7 @@ jobs:
           git config --local user.name "GitHub Actions"
 
           # 只添加 datas/ 目录下的 JSON 文件（避免提交 build/ 等）
-          git add datas/*.json 2>/dev/null || echo "No new data files to add"
+          git add datas/*.gz 2>/dev/null || echo "No new data files to add"
 
           # 如果有变更，则提交
           if git diff-index --quiet HEAD --; then
@@ -58,6 +58,6 @@ jobs:
           fi
 
           # 推送到 master 分支
-          git push origin HEAD:dataB
+          git push origin HEAD:master
 
         # 注意：GITHUB_TOKEN 默认有写权限（当在 workflow 中触发时）
