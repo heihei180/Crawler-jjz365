@@ -58,6 +58,6 @@ jobs:
           fi
 
           # 推送到 master 分支
-          git push origin HEAD:dataB
+          git push origin HEAD:dataset
 
         # 注意：GITHUB_TOKEN 默认有写权限（当在 workflow 中触发时）
