@@ -248,5 +248,9 @@ fun execute() {
         "房山区" to fangshan,
         "顺义区" to shunyi
     )
-    writeFile(data)
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss")
+    val currentDate = LocalDateTime.now().format(formatter)
+//    writeFile(data)
+    writeCompressedJson(data, "datas/camera_data_$currentDate.json.gz")
 }
