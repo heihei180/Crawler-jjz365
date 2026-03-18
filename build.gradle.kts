@@ -26,6 +26,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    // jsoup
+    implementation("org.jsoup:jsoup:1.16.1")
 
 //    <!-- JavaFX -->
 
