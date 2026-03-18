@@ -16,7 +16,6 @@ repositories {
         url = uri("https://maven.tencent.com/repository/maven-public/")
     }
     maven {
-//          url 'https://maven.aliyun.com/repository/central'
         url = uri("https://maven.aliyun.com/repository/central")
     }
     mavenCentral()
